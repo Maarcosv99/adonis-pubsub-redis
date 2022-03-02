@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    command: redis-server --requirepass password
+    ports:
+      - 6379:6379
+  
+  api:
+    build: ./app
+    restart: always
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    env_file:
+      - ./app/.env
+    ports:
+      - 3333:3333
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+    command: node ace serve --watch
+  
+volumes:
+  redis: {}
